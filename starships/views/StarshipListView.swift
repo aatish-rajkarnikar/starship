@@ -6,30 +6,35 @@
 //
 
 import SwiftUI
+import Combine
 
 struct StarshipListView: View {
     
-    @StateObject var viewModel = StarshipListViewModel()
+    @ObservedObject var viewModel = StarshipListViewModel()
     
     @State private var showFavourites = false
     
     var body: some View {
         NavigationView{
-            List(viewModel.ships) { item in
-                NavigationLink(
-                    destination: StarshipDetailView(starship: item)) {
-                        StarshipCellView(starship: item)
-                    }
+            if viewModel.isLoading {
+                ProgressView("Loading...")
+            } else {
+                List(viewModel.ships) { item in
+                    NavigationLink(
+                        destination: StarshipDetailView(starship: item)) {
+                            StarshipCellView(starship: item)
+                        }
+                }
+                .navigationBarTitle("Starships")
+                .navigationBarItems(trailing:
+                        Button(action: {
+                            showFavourites.toggle()
+                        }) {
+                            Image(systemName: "heart.circle.fill")
+                                .font(Font.system(.title)).foregroundColor(.red)
+                        }
+                    )
             }
-            .navigationBarTitle("Starships")
-            .navigationBarItems(trailing:
-                    Button(action: {
-                        showFavourites.toggle()
-                    }) {
-                        Image(systemName: "heart.circle.fill")
-                            .font(Font.system(.title)).foregroundColor(.red)
-                    }
-                )
         }
         .onAppear {
             viewModel.fetchStarships()
@@ -37,6 +42,10 @@ struct StarshipListView: View {
         .sheet(isPresented: $showFavourites, content: {
             FavouritesListView()
         })
+        .alert(isPresented: $viewModel.showAlert) {
+            Alert(title: Text("Error!"), message: Text("Something went wrong."), dismissButton: .default(Text("Got it!")))
+        }
+        
     }
 }
 
