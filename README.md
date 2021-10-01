@@ -2,6 +2,9 @@
 
 This project is a Coding Challange done for the role of Sr. iOS Developer for Transurban. 
 
+<img src="https://user-images.githubusercontent.com/19183428/135565668-483d50c2-ac14-4f8c-aab4-a0afd51fd7f8.png" width=50% height=50%>
+
+
 Basically, This app fetchs a single page of the Starship details from the given API. 
 
 While the API call is being made, a loading indicator is shown
